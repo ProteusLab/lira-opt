@@ -1,0 +1,21 @@
+[package]
+name = "lira_opt"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/ProteusLab/lira-opt"
+description = "Optimization passes for the LIRA data-flow IR"
+publish = false
+
+[dependencies]
+lira = { workspace = true }
+lira_ext = { path = "../lira_ext" }
+lira_trs = { path = "../lira_trs" }
+dateg = { workspace = true }
+log = { workspace = true }
+anyhow = { workspace = true }
+ahash = { workspace = true }
+
+[dev-dependencies]
+rayon = { workspace = true }
+du_utils_timed = { workspace = true }
