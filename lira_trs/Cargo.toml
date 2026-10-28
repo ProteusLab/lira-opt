@@ -1,0 +1,17 @@
+[package]
+name = "lira_trs"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/ProteusLab/lira-opt"
+description = "Term rewriting system for the LIRA data-flow IR"
+publish = false
+
+[dependencies]
+lira = { workspace = true }
+lira_ext = { path = "../lira_ext" }
+dateg = { workspace = true }
+dateg_extractors = { workspace = true }
+log = { workspace = true }
+anyhow = { workspace = true }
+ahash = { workspace = true }
