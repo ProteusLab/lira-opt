@@ -6,6 +6,54 @@ use lira_ext::iter_stmt_seq_mut_part;
 use crate::Arch;
 
 impl Arch {
+    /// Replace operations that have a `semantic_base` by their generic form:
+    /// `op <name>` -> `op.g <base>`, `fold.op <name>` -> `fold.op.g <base>`.
+    ///
+    /// Statements whose operation has no base, or whose widths do not match
+    /// the base signature, are kept as they are.
+    pub fn generalize_operations(&mut self) -> anyhow::Result<()> {
+        let mut bases: AHashMap<_, _> = Default::default();
+        for op in self.0.operations.iter() {
+            if let Some(base) = &op.semantic_base {
+                bases.insert(op.name.clone(), base.clone());
+            }
+        }
+
+        for (_, stmts) in iter_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
+            let mut r = StatementSeq::default();
+            let mut types = AHashMap::new();
+            for stmt in stmts.iter() {
+                let mut s = stmt.clone();
+                let generic = match stmt.kind.as_str() {
+                    "op" => Some("op.g"),
+                    "fold.op" => Some("fold.op.g"),
+                    _ => None,
+                };
+                if let Some(generic) = generic {
+                    let inputs: Vec<_> = stmt.inputs.iter().map(|input| types[input]).collect();
+                    let valid = bases.get(stmt.specifier.as_str()).is_some_and(|base| {
+                        lira_ext::ir_ops::BASE_OP_SIGNATURE
+                            .get(base.as_str())
+                            .is_some_and(|parse| parse(&stmt.outputs_types, &inputs).is_ok())
+                    });
+                    if valid {
+                        s.kind = generic.to_string();
+                        s.specifier = bases[stmt.specifier.as_str()].clone();
+                    }
+                }
+
+                for (name, ty) in stmt.outputs.iter().zip(stmt.outputs_types.iter().copied()) {
+                    let was = types.insert(name, ty);
+                    assert!(was.is_none());
+                }
+                r.try_push(s).unwrap();
+            }
+            *stmts = r;
+        }
+
+        Ok(())
+    }
+
     pub fn specialize_operations(&mut self) -> anyhow::Result<()> {
         let mut ops: AHashMap<_, _> = Default::default();
         for op in self.0.operations.iter() {

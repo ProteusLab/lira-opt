@@ -18,6 +18,8 @@ pub static IMPLICITNESS_STD: LazyLock<AHashMap<&'static str, dfg::Implicitness>>
                     "const",
                     "dyn_const",
                     "op",
+                    "op.g",
+                    "fold.op.g",
                     "broadcast",
                     "index",
                     "gather",
