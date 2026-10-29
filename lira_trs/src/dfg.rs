@@ -12,7 +12,8 @@ pub struct Statement {
     pub implicit: Implicit,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Implicitness {
     Pure,
     Read,

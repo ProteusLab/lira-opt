@@ -86,9 +86,12 @@ impl dfg::State {
         r
     }
 
-    pub fn from_egraph(lira: &theory::Lira, state: TokenOpaque<theory::State>) -> Self {
-        let index = lira.extract(state);
-        Self::from_egraph_index(lira, &index, state)
+    pub fn from_egraph(
+        lira: &theory::Lira,
+        state: TokenOpaque<theory::State>,
+    ) -> anyhow::Result<Self> {
+        let index = lira.extract(state, None)?;
+        Ok(Self::from_egraph_index(lira, &index, state))
     }
     pub fn from_egraph_index(
         lira: &theory::Lira,
@@ -165,7 +168,7 @@ fn optimize(
     let mut lira = theory::Lira::default();
     let state = dfg.to_egraph(&mut lira);
     post_init(&mut lira);
-    let dfg = dfg::State::from_egraph(&lira, state);
+    let dfg = dfg::State::from_egraph(&lira, state).unwrap();
 
     dfg._dbg_print(8, 4);
 

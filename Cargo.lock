@@ -104,6 +104,12 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "bitflags"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "bitflags"
 version = "2.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
@@ -239,10 +245,25 @@ dependencies = [
 [[package]]
 name = "dateg"
 version = "0.1.0"
+source = "git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2#2409d1c065651feddfab00c61e755f602acde9d2"
+dependencies = [
+ "ahash",
+ "dateg_macro 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2)",
+ "egglog-bridge",
+ "egglog-core-relations",
+ "egglog-numeric-id",
+ "indexmap 2.14.2",
+ "paste",
+ "rayon",
+]
+
+[[package]]
+name = "dateg"
+version = "0.1.0"
 source = "git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4#abad7b4ce1e677515781306575a11930b6bfd9c4"
 dependencies = [
  "ahash",
- "dateg_macro",
+ "dateg_macro 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4)",
  "egglog-bridge",
  "egglog-core-relations",
  "egglog-numeric-id",
@@ -253,13 +274,11 @@ dependencies = [
 [[package]]
 name = "dateg_extractors"
 version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4#abad7b4ce1e677515781306575a11930b6bfd9c4"
+source = "git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2#2409d1c065651feddfab00c61e755f602acde9d2"
 dependencies = [
  "ahash",
- "anyhow",
- "dateg",
+ "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2)",
  "dateg_extractors_macro",
- "du_utils_timed",
  "easy-smt",
  "log",
  "paste",
@@ -269,7 +288,17 @@ dependencies = [
 [[package]]
 name = "dateg_extractors_macro"
 version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4#abad7b4ce1e677515781306575a11930b6bfd9c4"
+source = "git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2#2409d1c065651feddfab00c61e755f602acde9d2"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "dateg_macro"
+version = "0.1.0"
+source = "git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2#2409d1c065651feddfab00c61e755f602acde9d2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -284,6 +313,37 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
+]
+
+[[package]]
+name = "defmt"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e4a0795ac740cb54d7b3775c9c17345f6aaecf884c01733b39d6017738e0e3e1"
+dependencies = [
+ "bitflags 1.3.2",
+ "defmt-macros",
+]
+
+[[package]]
+name = "defmt-macros"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "840bb056bd99c495c9188198a258ab787c79f306d864db3e6e8451442d6d8366"
+dependencies = [
+ "defmt-parser",
+ "proc-macro2",
+ "quote",
+ "syn 3.0.9",
+]
+
+[[package]]
+name = "defmt-parser"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "71958f69fb2de856c5dd51ac9377e986ca1aa5919f931bf5395a807277f889a0"
+dependencies = [
+ "thiserror",
 ]
 
 [[package]]
@@ -407,6 +467,29 @@ name = "either"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e9c71c2167ca323c882b99918929403426e2373ea17242ff5653e0d5e1058be"
+
+[[package]]
+name = "env_filter"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "900d271a03799a1ee8d1ca9b19893b48ca674a9284fefcfb85f05e74ed314217"
+dependencies = [
+ "log",
+ "regex",
+]
+
+[[package]]
+name = "env_logger"
+version = "0.11.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de671bd27a75a797dc9ae289ba1e77276e75e2026408aab65185384e2d5cd3f6"
+dependencies = [
+ "anstream",
+ "anstyle",
+ "env_filter",
+ "jiff",
+ "log",
+]
 
 [[package]]
 name = "equivalent"
@@ -547,6 +630,43 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
+name = "jiff"
+version = "0.2.38"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2b005715dcbeb0089a3c0dab99f2ff1cc3b2525323552703d648585d342a383"
+dependencies = [
+ "defmt",
+ "jiff-core",
+ "jiff-static",
+ "log",
+ "portable-atomic",
+ "portable-atomic-util",
+ "serde_core",
+]
+
+[[package]]
+name = "jiff-core"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e52fe76043ccecc9005d2305ebaadf7d7fc0cc89ca6baa10a94d6bc68c7128c"
+dependencies = [
+ "defmt",
+ "log",
+]
+
+[[package]]
+name = "jiff-static"
+version = "0.2.38"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cc9817253cf7c7ee4684451bd327e88d6f3658014e54a29198625590650695c"
+dependencies = [
+ "jiff-core",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
 name = "js-sys"
 version = "0.3.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -576,11 +696,28 @@ source = "git+https://github.com/ProteusLab/LIRA.git?rev=8911eeaedf20731b715e718
 dependencies = [
  "ahash",
  "anyhow",
- "dateg",
+ "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4)",
  "log",
  "regex",
  "serde",
  "serde_yaml",
+]
+
+[[package]]
+name = "lira-opt-arch"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "env_logger",
+ "lira",
+ "lira_trs",
+ "log",
+ "rayon",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "toml",
 ]
 
 [[package]]
@@ -598,7 +735,7 @@ version = "0.1.0"
 dependencies = [
  "ahash",
  "anyhow",
- "dateg",
+ "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2)",
  "du_utils_timed",
  "lira",
  "lira_ext",
@@ -613,11 +750,12 @@ version = "0.1.0"
 dependencies = [
  "ahash",
  "anyhow",
- "dateg",
+ "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=2409d1c065651feddfab00c61e755f602acde9d2)",
  "dateg_extractors",
  "lira",
  "lira_ext",
  "log",
+ "serde",
 ]
 
 [[package]]
@@ -772,6 +910,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
+name = "portable-atomic"
+version = "1.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05c8b63e8d9609db387f0324918f81d68fe27748f084ef092fb35954d0539a85"
+
+[[package]]
+name = "portable-atomic-util"
+version = "0.2.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10ab3eb7f3becc3a1cbc4f2c6f20267996cfc1a6467a873763411b136a122715"
+dependencies = [
+ "portable-atomic",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -859,7 +1012,7 @@ version = "0.5.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed2bf2547551a7053d6fdfafda3f938979645c44812fbfcda098faae3f1a362d"
 dependencies = [
- "bitflags",
+ "bitflags 2.13.2",
 ]
 
 [[package]]
@@ -959,6 +1112,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_spanned"
+version = "0.6.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf41e0cfaf7226dca15e8197172c295a782857fcb97fad1808a166870dee75a3"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "serde_yaml"
 version = "0.8.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1029,6 +1191,47 @@ dependencies = [
  "quote",
  "syn 3.0.9",
 ]
+
+[[package]]
+name = "toml"
+version = "0.8.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc1beb996b9d83529a9e75c17a1686767d148d70663143c7854d8b4a09ced362"
+dependencies = [
+ "serde",
+ "serde_spanned",
+ "toml_datetime",
+ "toml_edit",
+]
+
+[[package]]
+name = "toml_datetime"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22cddaf88f4fbc13c51aebbf5f8eceb5c7c5a9da2ac40a13519eb5b0a0e8f11c"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "toml_edit"
+version = "0.22.27"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41fe8c660ae4257887cf66394862d21dbca4a6ddd26f04a3560410406a2f819a"
+dependencies = [
+ "indexmap 2.14.2",
+ "serde",
+ "serde_spanned",
+ "toml_datetime",
+ "toml_write",
+ "winnow",
+]
+
+[[package]]
+name = "toml_write"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
 
 [[package]]
 name = "unicode-ident"
@@ -1131,6 +1334,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
  "windows-link",
+]
+
+[[package]]
+name = "winnow"
+version = "0.7.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df79d97927682d2fd8adb29682d1140b343be4ac0f08fd68b7765d9c059d3945"
+dependencies = [
+ "memchr",
 ]
 
 [[package]]

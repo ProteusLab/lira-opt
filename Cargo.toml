@@ -1,14 +1,20 @@
 [workspace]
 resolver = "3"
-members = ["lira_ext", "lira_trs", "lira_opt"]
+members = ["lira_ext", "lira_trs", "lira_opt", "lira-opt-arch"]
 
 [workspace.dependencies]
 anyhow = "1.0.102"
 log = "0.4.29"
 ahash = "0.8.12"
 rayon = "1.12.0"
-dateg = { git = "https://github.com/belovdv/dateg.git", rev = "abad7b4ce1e677515781306575a11930b6bfd9c4" }
-dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "abad7b4ce1e677515781306575a11930b6bfd9c4" }
+clap = { version = "4", features = ["derive"] }
+env_logger = "0.11"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.8"
+toml = "0.8"
+dateg = { git = "https://github.com/belovdv/dateg.git", rev = "2409d1c065651feddfab00c61e755f602acde9d2" }
+dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "2409d1c065651feddfab00c61e755f602acde9d2" }
 du_utils_timed = { git = "https://github.com/belovdv/du_utils.git", rev = "6adc494d430bfebe6debccf4dca9c38a69cbb1e6" }
 lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "8911eeaedf20731b715e718ea578828bba7980b5", features = ["lira_dateg"] }
 

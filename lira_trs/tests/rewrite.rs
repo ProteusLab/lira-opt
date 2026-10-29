@@ -49,7 +49,7 @@ fn rewrite() {
     while lira.run_ruleset("opt") {}
     lira.enrich();
 
-    let dfg = dfg::State::from_egraph(&lira, state);
+    let dfg = dfg::State::from_egraph(&lira, state).unwrap();
 
     let ir = dfg.to_lira();
     let text2 = ir.to_string();

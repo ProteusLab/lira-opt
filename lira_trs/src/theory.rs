@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use dateg::{BaseValue, ContainerVec, TokenOpaque, TokenOpaqueMarker, theory};
-use dateg_extractors::dag::{Extractor, index_dag};
+use dateg_extractors::dag::{ExtractOptions, Extractor, SolverConfig, index_dag};
 use lira::Shape;
 
 theory!(Lira(
@@ -224,8 +224,14 @@ impl Lira {
         )
     }
 
-    pub fn extract(&self, t: impl TokenOpaqueMarker) -> Index {
-        self.extractor(t).extract(self, t)
+    pub fn extract(
+        &self,
+        t: impl TokenOpaqueMarker,
+        options: Option<&ExtractOptions>,
+    ) -> anyhow::Result<Index> {
+        let default = ExtractOptions::builder(SolverConfig::thorough()).build();
+        let options = options.unwrap_or(&default);
+        Ok(self.extractor(t).extract(self, t, options, None)?.index)
     }
 
     /// Run bunch of simple rulesets: aliases, properties, etc

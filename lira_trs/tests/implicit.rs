@@ -52,7 +52,7 @@ fn optimize(ir: &lira::StatementSeq) -> lira::StatementSeq {
     while lira.run_ruleset("opt") {}
     lira.enrich();
 
-    let dfg = dfg::State::from_egraph(&lira, state);
+    let dfg = dfg::State::from_egraph(&lira, state).unwrap();
     dfg._dbg_print(8, 4);
 
     let ir = dfg.to_lira();
