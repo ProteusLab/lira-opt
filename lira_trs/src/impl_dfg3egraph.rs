@@ -240,7 +240,8 @@ fn dfg3egraph() {
                 a
             )
         }
-        lira.enrich();
+        lira.enrich(std::time::Instant::now() + std::time::Duration::from_secs(10))
+            .unwrap();
         while lira.run_ruleset("opt") {}
     })
     .to_string();

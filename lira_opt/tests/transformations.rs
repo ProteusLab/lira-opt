@@ -3,6 +3,7 @@ use du_utils_timed::timed_print;
 use lira_opt::Theory;
 use lira_trs::dfg;
 use rayon::{ThreadPoolBuilder, prelude::*};
+use std::time::{Duration, Instant};
 
 fn test(sa: &str, sb: &str, mgc: usize, eq: bool) -> anyhow::Result<()> {
     let pool = ThreadPoolBuilder::new().num_threads(1).build().unwrap();
@@ -33,7 +34,7 @@ fn test_(sa: &str, sb: &str, mgc: usize, eq: bool) -> anyhow::Result<()> {
     let state_b = dfg_b.to_egraph(&mut lira);
 
     lira.run_ruleset_set_transformation_costs_to_zero();
-    lira.run_ruleset_transformations_operations();
+    lira.run_ruleset_transformations_operations(Instant::now() + Duration::from_secs(60))?;
 
     let state_a = state_a.canon(&lira);
     let state_b = state_b.canon(&lira);

@@ -9,6 +9,7 @@ anyhow.workspace = true
 clap.workspace = true
 env_logger.workspace = true
 lira.workspace = true
+lira_opt.path = "../lira_opt"
 lira_trs.path = "../lira_trs"
 log.workspace = true
 rayon.workspace = true

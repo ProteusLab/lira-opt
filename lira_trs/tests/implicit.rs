@@ -1,3 +1,5 @@
+use std::time::{Duration, Instant};
+
 use dateg::execute;
 use lira_trs::{dfg, theory::Lira};
 
@@ -48,9 +50,10 @@ fn optimize(ir: &lira::StatementSeq) -> lira::StatementSeq {
         val)
     }
 
-    lira.enrich();
+    let deadline = Instant::now() + Duration::from_secs(1);
+    lira.enrich(deadline).unwrap();
     while lira.run_ruleset("opt") {}
-    lira.enrich();
+    lira.enrich(deadline).unwrap();
 
     let dfg = dfg::State::from_egraph(&lira, state).unwrap();
     dfg._dbg_print(8, 4);

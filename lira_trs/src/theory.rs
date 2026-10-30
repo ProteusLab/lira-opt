@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, time::Instant};
 
 use dateg::{BaseValue, ContainerVec, TokenOpaque, TokenOpaqueMarker, theory};
 use dateg_extractors::dag::{ExtractOptions, Extractor, SolverConfig, index_dag};
@@ -235,8 +235,11 @@ impl Lira {
     }
 
     /// Run bunch of simple rulesets: aliases, properties, etc
-    pub fn enrich(&mut self) {
-        while self.run_ruleset("enrich") {}
+    pub fn enrich(&mut self, deadline: Instant) -> anyhow::Result<()> {
+        while self.run_ruleset("enrich") {
+            anyhow::ensure!(Instant::now() < deadline, "timeout in ruleset enrich");
+        }
+        Ok(())
     }
 
     pub fn _dbg_tables(&self) {

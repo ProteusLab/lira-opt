@@ -711,6 +711,7 @@ dependencies = [
  "clap",
  "env_logger",
  "lira",
+ "lira_opt",
  "lira_trs",
  "log",
  "rayon",

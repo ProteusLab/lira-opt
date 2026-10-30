@@ -1,6 +1,8 @@
 mod operations;
 mod vector;
 
+use std::time::Instant;
+
 use crate::Theory;
 
 impl Theory {
@@ -22,18 +24,25 @@ impl Theory {
         self.run_ruleset("set all transformation costs to zero");
     }
 
-    pub fn run_ruleset_transformations_operations(&mut self) {
-        self.enrich();
+    pub fn run_ruleset_transformations_operations(
+        &mut self,
+        deadline: Instant,
+    ) -> anyhow::Result<()> {
+        self.enrich(deadline)?;
         while self.run_ruleset("transformations: operations") {
-            self.enrich();
+            anyhow::ensure!(Instant::now() < deadline, "timeout in ruleset operations");
+            self.enrich(deadline)?;
         }
-        self.enrich();
+        self.enrich(deadline)?;
+        Ok(())
     }
-    pub fn run_ruleset_transformations_vector(&mut self) {
-        self.enrich();
+    pub fn run_ruleset_transformations_vector(&mut self, deadline: Instant) -> anyhow::Result<()> {
+        self.enrich(deadline)?;
         while self.run_ruleset("transformations: vector") {
-            self.enrich();
+            anyhow::ensure!(Instant::now() < deadline, "timeout in ruleset vector");
+            self.enrich(deadline)?;
         }
-        self.enrich();
+        self.enrich(deadline)?;
+        Ok(())
     }
 }
