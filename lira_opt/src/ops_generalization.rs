@@ -1,7 +1,7 @@
 use ahash::AHashMap;
 use anyhow::Context;
 use lira::{Operation, StatementSeq};
-use lira_ext::iter_stmt_seq_mut_part;
+use lira_ext::iter_arch_stmt_seq_mut_part;
 
 use crate::Arch;
 
@@ -19,7 +19,7 @@ impl Arch {
             }
         }
 
-        for (_, stmts) in iter_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
+        for (_, stmts) in iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
             let mut r = StatementSeq::default();
             let mut types = AHashMap::new();
             for stmt in stmts.iter() {
@@ -34,7 +34,7 @@ impl Arch {
                     let valid = bases.get(stmt.specifier.as_str()).is_some_and(|base| {
                         lira_ext::ir_ops::BASE_OP_SIGNATURE
                             .get(base.as_str())
-                            .is_some_and(|parse| parse(&stmt.outputs_types, &inputs).is_ok())
+                            .is_some_and(|(_, parse)| parse(&stmt.outputs_types, &inputs).is_ok())
                     });
                     if valid {
                         s.kind = generic.to_string();
@@ -65,7 +65,7 @@ impl Arch {
             }
         }
 
-        for (name, stmts) in iter_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
+        for (name, stmts) in iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
             let mut r = StatementSeq::default();
             let mut types = AHashMap::new();
             for stmt in stmts.iter() {
@@ -85,7 +85,7 @@ impl Arch {
                         std::collections::hash_map::Entry::Occupied(e) => e.get().to_string(),
                         std::collections::hash_map::Entry::Vacant(e) => {
                             let base = stmt.specifier.as_str();
-                            let Some(parse) = lira_ext::ir_ops::BASE_OP_SIGNATURE.get(base) else {
+                            let Some((_, parse)) = lira_ext::ir_ops::BASE_OP_SIGNATURE.get(base) else {
                                 panic!("unexpected op {base}");
                             };
                             let params = parse(&stmt.outputs_types, &inputs)

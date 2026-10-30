@@ -1,6 +1,12 @@
 [workspace]
 resolver = "3"
-members = ["lira_ext", "lira_trs", "lira_opt", "lira-opt-arch"]
+members = [
+    "lira_ext",
+    "lira_trs",
+    "lira_opt",
+    "lira-arch-opt",
+    "lira-arch-validate",
+]
 
 [workspace.dependencies]
 anyhow = "1.0.102"
@@ -16,7 +22,9 @@ toml = "0.8"
 dateg = { git = "https://github.com/belovdv/dateg.git", rev = "2409d1c065651feddfab00c61e755f602acde9d2" }
 dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "2409d1c065651feddfab00c61e755f602acde9d2" }
 du_utils_timed = { git = "https://github.com/belovdv/du_utils.git", rev = "6adc494d430bfebe6debccf4dca9c38a69cbb1e6" }
-lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "8911eeaedf20731b715e718ea578828bba7980b5", features = ["lira_dateg"] }
+lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "8911eeaedf20731b715e718ea578828bba7980b5", features = [
+    "lira_dateg",
+] }
 
 [profile.work]
 inherits = "dev"

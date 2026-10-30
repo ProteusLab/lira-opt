@@ -1,6 +1,10 @@
-pub mod arch;
+mod arch_utils;
 pub mod ir_ops;
+mod ir_std;
+mod ir_utils;
+mod validate;
 
-pub use arch::{
-    iter_stmt_seq, iter_stmt_seq_mut, iter_stmt_seq_mut_part, iter_stmt_seq_part,
-};
+pub use arch_utils::*;
+pub use ir_std::*;
+pub use ir_utils::*;
+pub use validate::*;

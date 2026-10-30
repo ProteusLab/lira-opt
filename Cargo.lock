@@ -704,7 +704,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "lira-opt-arch"
+name = "lira-arch-opt"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -721,12 +721,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "lira-arch-validate"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "env_logger",
+ "lira",
+ "lira_ext",
+ "log",
+ "rayon",
+]
+
+[[package]]
 name = "lira_ext"
 version = "0.1.0"
 dependencies = [
  "ahash",
  "anyhow",
  "lira",
+ "log",
+ "rayon",
 ]
 
 [[package]]

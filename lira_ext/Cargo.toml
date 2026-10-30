@@ -11,3 +11,5 @@ publish = false
 lira = { workspace = true }
 anyhow = { workspace = true }
 ahash = { workspace = true }
+log = { workspace = true }
+rayon = { workspace = true }

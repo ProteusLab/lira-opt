@@ -1,0 +1,14 @@
+[package]
+name = "lira-arch-validate"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+env_logger.workspace = true
+lira.workspace = true
+lira_ext.path = "../lira_ext"
+log.workspace = true
+rayon.workspace = true
