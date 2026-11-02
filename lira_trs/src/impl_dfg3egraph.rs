@@ -93,6 +93,19 @@ impl dfg::State {
         let index = lira.extract(state, None)?;
         Ok(Self::from_egraph_index(lira, &index, state))
     }
+    /// Extract with an explicit solver deadline instead of the default one.
+    pub fn from_egraph_with_timeout(
+        lira: &theory::Lira,
+        state: TokenOpaque<theory::State>,
+        timeout: std::time::Duration,
+    ) -> anyhow::Result<Self> {
+        let options = dateg_extractors::dag::ExtractOptions::builder(
+            dateg_extractors::dag::SolverConfig::thorough().with_timeout(timeout),
+        )
+        .build();
+        let index = lira.extract(state, Some(&options))?;
+        Ok(Self::from_egraph_index(lira, &index, state))
+    }
     pub fn from_egraph_index(
         lira: &theory::Lira,
         index: &theory::Index,
