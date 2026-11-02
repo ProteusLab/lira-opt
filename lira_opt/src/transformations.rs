@@ -17,6 +17,8 @@ impl Theory {
         self.set_ruleset_active("set all transformation costs to zero");
         let sel = self.sel;
         let gc = self.generation_cost;
+        // Input terms start at generation 0 so the guarded class-creating
+        // rules may fire once on them.
         dateg::execute! {self; (rule (query x (sel _ _)) (set 0 (gc x))) }
     }
 

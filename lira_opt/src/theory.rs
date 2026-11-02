@@ -41,6 +41,14 @@ dateg::theory!(Lira: lira_trs::theory::Lira {
         (evaluation usize_max (usize usize) usize { |(a, b)| std::cmp::max(a, b) })
         (evaluation usize_add (usize usize) usize { |(a, b)| a.wrapping_add(b) })
         (evaluation usize_sub (usize usize) usize { |(a, b)| a.wrapping_sub(b) })
+        // Derivation depth of an e-class: `n` means the class was produced
+        // from the input terms with at most `n` applications of
+        // class-creating rules. Guards of the form
+        // `generation_cost < max_generation_cost` bound e-class creation
+        // (and with it e-nodes and what extraction can choose), not
+        // extraction cost; the extractor never sees this table. Only
+        // class-creating rules query and propagate it — rules that merely
+        // merge or rewrite reuse existing values and their costs.
         (function generation_cost (Value) usize :merge usize_min)
     )
     (
