@@ -19,7 +19,9 @@ impl Arch {
             }
         }
 
-        for (_, stmts) in iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
+        for (_, stmts) in
+            iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets)
+        {
             let mut r = StatementSeq::default();
             let mut types = AHashMap::new();
             for stmt in stmts.iter() {
@@ -65,7 +67,9 @@ impl Arch {
             }
         }
 
-        for (name, stmts) in iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets) {
+        for (name, stmts) in
+            iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets)
+        {
             let mut r = StatementSeq::default();
             let mut types = AHashMap::new();
             for stmt in stmts.iter() {
@@ -85,7 +89,8 @@ impl Arch {
                         std::collections::hash_map::Entry::Occupied(e) => e.get().to_string(),
                         std::collections::hash_map::Entry::Vacant(e) => {
                             let base = stmt.specifier.as_str();
-                            let Some((_, parse)) = lira_ext::ir_ops::BASE_OP_SIGNATURE.get(base) else {
+                            let Some((_, parse)) = lira_ext::ir_ops::BASE_OP_SIGNATURE.get(base)
+                            else {
                                 panic!("unexpected op {base}");
                             };
                             let params = parse(&stmt.outputs_types, &inputs)

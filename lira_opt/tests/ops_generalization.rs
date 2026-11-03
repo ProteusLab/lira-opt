@@ -37,7 +37,10 @@ fn round_trip() -> anyhow::Result<()> {
 
     let mut arch = lira_opt::Arch(arch);
     arch.specialize_operations()?;
-    assert_eq!(arch.0.snippets[0].seq, StatementSeq::parse(specialized).unwrap());
+    assert_eq!(
+        arch.0.snippets[0].seq,
+        StatementSeq::parse(specialized).unwrap()
+    );
     assert_eq!(arch.0.operations.len(), 3);
     assert_eq!(arch.0.operations[1].name, "sgt_8");
     assert_eq!(arch.0.operations[1].semantic_base.as_deref(), Some("sgt"));
@@ -46,10 +49,16 @@ fn round_trip() -> anyhow::Result<()> {
     // `add_8` has a base but a mismatched arrow, `mystery_8` has no base: both
     // survive generalization unchanged.
     arch.generalize_operations()?;
-    assert_eq!(arch.0.snippets[0].seq, StatementSeq::parse(generic).unwrap());
+    assert_eq!(
+        arch.0.snippets[0].seq,
+        StatementSeq::parse(generic).unwrap()
+    );
 
     arch.specialize_operations()?;
-    assert_eq!(arch.0.snippets[0].seq, StatementSeq::parse(specialized).unwrap());
+    assert_eq!(
+        arch.0.snippets[0].seq,
+        StatementSeq::parse(specialized).unwrap()
+    );
 
     Ok(())
 }

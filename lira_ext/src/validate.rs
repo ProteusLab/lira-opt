@@ -2,8 +2,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 use ahash::AHashSet;
 use anyhow::{Context, Result};
-use rayon::prelude::*;
 use lira::{Arch, ArchIndex, Shape, Statement, StatementSeq};
+use rayon::prelude::*;
 
 use crate::ir_ops::BASE_OP_SIGNATURE;
 use crate::ir_utils::iter_stmt_seq_with_inputs;
@@ -20,8 +20,7 @@ pub fn validate_arch(
     crate::arch_utils::iter_arch_stmt_seq(arch)
         .par_bridge()
         .for_each(|(name, stmts)| {
-            if let Err(error) =
-                validate_stmts_signatures(&index, stmts, custom_kinds, mult_divides)
+            if let Err(error) = validate_stmts_signatures(&index, stmts, custom_kinds, mult_divides)
             {
                 failed.store(true, Ordering::Relaxed);
                 log::error!("{name}: {error:#}");
@@ -44,8 +43,7 @@ pub fn validate_stmts_signatures(
     validate_stmts_def_use(stmts)?;
     for (stmt, inputs) in iter_stmt_seq_with_inputs(stmts) {
         let err = || stmt.to_string();
-        validate_stmt(index, stmt, &inputs, custom_kinds, mult_divides)
-            .with_context(err)?;
+        validate_stmt(index, stmt, &inputs, custom_kinds, mult_divides).with_context(err)?;
     }
     Ok(())
 }
