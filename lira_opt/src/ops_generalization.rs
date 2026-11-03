@@ -104,7 +104,6 @@ impl Arch {
                                 outputs: stmt.outputs_types.clone(),
                                 semantic_base: Some(base.to_string()),
                                 semantic_func: None,
-                                semantic_func_128: None,
                                 semantic_table: None,
                             });
                             name

@@ -249,7 +249,7 @@ source = "git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c
 dependencies = [
  "ahash",
  "anyhow",
- "dateg_macro 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5)",
+ "dateg_macro",
  "egglog-bridge",
  "egglog-core-relations",
  "egglog-numeric-id",
@@ -260,26 +260,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "dateg"
-version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4#abad7b4ce1e677515781306575a11930b6bfd9c4"
-dependencies = [
- "ahash",
- "dateg_macro 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4)",
- "egglog-bridge",
- "egglog-core-relations",
- "egglog-numeric-id",
- "indexmap 2.14.2",
- "paste",
-]
-
-[[package]]
 name = "dateg_extractors"
 version = "0.1.0"
 source = "git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5#6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5"
 dependencies = [
  "ahash",
- "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5)",
+ "dateg",
  "dateg_extractors_macro",
  "easy-smt",
  "log",
@@ -301,16 +287,6 @@ dependencies = [
 name = "dateg_macro"
 version = "0.1.0"
 source = "git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5#6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.119",
-]
-
-[[package]]
-name = "dateg_macro"
-version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4#abad7b4ce1e677515781306575a11930b6bfd9c4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -694,11 +670,11 @@ checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 [[package]]
 name = "lira"
 version = "0.1.0"
-source = "git+https://github.com/ProteusLab/LIRA.git?rev=8911eeaedf20731b715e718ea578828bba7980b5#8911eeaedf20731b715e718ea578828bba7980b5"
+source = "git+https://github.com/ProteusLab/LIRA.git?rev=1344f9dc45c1c28ed17ee7c658837814b128e552#1344f9dc45c1c28ed17ee7c658837814b128e552"
 dependencies = [
  "ahash",
  "anyhow",
- "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=abad7b4ce1e677515781306575a11930b6bfd9c4)",
+ "egglog-core-relations",
  "log",
  "regex",
  "serde",
@@ -753,7 +729,7 @@ version = "0.1.0"
 dependencies = [
  "ahash",
  "anyhow",
- "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5)",
+ "dateg",
  "du_utils_timed",
  "lira",
  "lira_ext",
@@ -768,7 +744,7 @@ version = "0.1.0"
 dependencies = [
  "ahash",
  "anyhow",
- "dateg 0.1.0 (git+https://github.com/belovdv/dateg.git?rev=6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5)",
+ "dateg",
  "dateg_extractors",
  "lira",
  "lira_ext",

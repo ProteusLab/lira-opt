@@ -27,11 +27,11 @@ fn round_trip() -> anyhow::Result<()> {
         outputs: vec![8],
         semantic_base: Some("add".to_string()),
         semantic_func: None,
-        semantic_func_128: None,
         semantic_table: None,
     }];
     arch.snippets.push(Snippet {
         name: "s".to_string(),
+        attributes: vec![],
         seq: StatementSeq::parse(generic).unwrap(),
     });
 
