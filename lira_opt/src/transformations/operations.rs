@@ -1,4 +1,6 @@
 use dateg::execute;
+use lira::Shape;
+use lira_trs::theory::Value;
 
 use crate::Theory;
 
@@ -288,13 +290,23 @@ impl Theory {
         }
 
         // --- Distributivity ---
+        // One shared index, keyed by the inner specifier too. A relation, not
+        // a function: value ids are not stable across rebuilds, and a
+        // function's assert-eq merge would panic on stale ids.
+        execute! {self;
+            (relation index_distributivity (Shape usize String Value Value Value))
+        }
         for (outer, inner) in [("add", "mul"), ("orr", "and"), ("and", "orr")] {
             execute! {self;
                 // outer(inner(a,b), inner(a,c)) -> inner(a, outer(b,c))
                 (rule
-                    (query lhs (op_g_0 h o {#outer.into()}
-                        (in2 (sel0 (op_g_0 h o {#inner.into()} (in2 a b)))
-                             (sel0 (op_g_0 h o {#inner.into()} (in2 a c))))))
+                    (query val (sel0 (op_g_0 h o {#inner.into()} (in2 a b))))
+                    (insert (index_distributivity h o {#inner.into()} a b val))
+                )
+                (rule
+                    (query _ (index_distributivity h o {#inner.into()} a b ab))
+                    (query _ (index_distributivity h o {#inner.into()} a c ac))
+                    (query lhs (op_g_0 h o {#outer.into()} (in2 ab ac)))
                     (add bc (sel0 (op_g_0 h o {#outer.into()} (in2 b c))))
                     (set lhs (op_g_0 h o {#inner.into()} (in2 a bc)))
                     // Prevent infinite explosion via creating new e-classes

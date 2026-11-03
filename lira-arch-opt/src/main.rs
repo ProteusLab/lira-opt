@@ -10,7 +10,20 @@ use clap::Parser;
 use rayon::prelude::*;
 use serde::Deserialize;
 
+const AFTER_HELP: &str = "\
+TIME: the effective per-case deadline is min(soft + remaining_pool, hard).
+Overshoot above `soft` is charged to the shared pool; when the pool is
+exhausted the run exits 1 and writes no output. A case that reaches its
+deadline is skipped: its statements stay unchanged.
+
+MEMORY: each case builds its own egraph and SMT encoding. Two caps bound it:
+`Z3_MEMORY_MB` (default 512, 0 disables) limits the z3 child process,
+`LIRA_MAX_ROWS` (default 200000) limits the summed rows of all
+tables and skips the case when exceeded. Budget ~1 GB per worker with both
+caps, ~2.5 GB without them.";
+
 #[derive(Parser)]
+#[command(about = "Optimize an arch file with the DFG egraph pass", after_help = AFTER_HELP)]
 struct Cli {
     #[arg(long)]
     input: PathBuf,
@@ -24,14 +37,14 @@ struct Cli {
     #[command(flatten)]
     opt: CliOpt,
 
-    /// Base max time per case in s, exceeding will be charged from `timeout_global_extra`
-    #[arg(long, default_value_t = 10)]
+    /// Base max time per case in s; time above it is charged to the shared pool
+    #[arg(long, default_value_t = 1)]
     timeout_per_case_soft: usize,
-    /// Max time per case in s
-    #[arg(long, default_value_t = 300)]
+    /// Absolute max time per case in s
+    #[arg(long, default_value_t = 60)]
     timeout_per_case_hard: usize,
-    /// Global time pool for cases exceeding `timeout_per_case_soft`, in s
-    /// (default: 5 min per rayon thread)
+    /// Shared pool for overshoot above the soft budget, in s
+    /// (default: `timeout_per_case_soft * <number of cases>`)
     #[arg(long)]
     timeout_global_extra: Option<usize>,
 }
@@ -81,18 +94,33 @@ fn main() -> Result<()> {
             && !config.exclude.iter().any(|pattern| name.contains(pattern))
     };
     let mut arch = lira_opt::Arch(arch);
+    let max_rows = std::env::var("LIRA_MAX_ROWS")
+        .ok()
+        .and_then(|value| value.parse::<usize>().ok())
+        .unwrap_or(200_000);
     if cli.opt.opt {
         arch.generalize_operations()?;
     }
-    let arch_ss = &mut arch.0.snippets;
-    let arch_is = &mut arch.0.instructions;
+    let case_count = arch.0.snippets.len() + arch.0.instructions.len();
     let pool = cli
         .timeout_global_extra
-        .unwrap_or_else(|| rayon::current_num_threads() * 300);
+        .unwrap_or(cli.timeout_per_case_soft * case_count);
     let timeout_pool = AtomicUsize::new(pool * 1000);
     [].into_par_iter()
-        .chain(arch_ss.par_iter_mut().map(|s| (&s.name, &mut s.seq)))
-        .chain(arch_is.par_iter_mut().map(|s| (&s.name, &mut s.semantic)))
+        .chain(
+            arch.0
+                .snippets
+                .par_iter_mut()
+                .with_min_len(1)
+                .map(|s| (&s.name, &mut s.seq)),
+        )
+        .chain(
+            arch.0
+                .instructions
+                .par_iter_mut()
+                .with_min_len(1)
+                .map(|s| (&s.name, &mut s.semantic)),
+        )
         .filter(|(name, _)| filter(name))
         .for_each(|(name, stmts)| {
             let timeout = Duration::from_millis(
@@ -100,7 +128,7 @@ fn main() -> Result<()> {
             )
             .min(Duration::from_secs(cli.timeout_per_case_hard as u64));
             let start = Instant::now();
-            if let Err(error) = process(name, stmts, &config, &cli.opt, start + timeout) {
+            if let Err(error) = process(name, stmts, &config, &cli.opt, start + timeout, max_rows) {
                 log::error!("{name}: {error:#}");
             }
             let took = start.elapsed().as_millis() as usize;
@@ -130,6 +158,7 @@ fn process(
     config: &Config,
     opt: &CliOpt,
     deadline: Instant,
+    max_rows: usize,
 ) -> Result<()> {
     let before = stmts.len();
     let implicitness = |kind: &str| {
@@ -139,39 +168,55 @@ fn process(
 
     let start = Instant::now();
     let mut dfg = lira_trs::dfg::State::from_lira(stmts, implicitness);
-    let mut skipped = false;
     if opt.opt {
-        let mut theory = lira_opt::Theory::default();
-        theory.add_transformation_rulesets(opt.mgc);
-        let state = dfg.to_egraph(&mut theory);
-        theory.run_ruleset_set_transformation_costs_to_zero();
+        let skipped = process_opt(name, &mut dfg, opt.mgc, deadline, max_rows, start)?;
+        *stmts = dfg.to_lira();
+        log::trace!(
+            "{}",
+            serde_json::json!({
+                "name": name,
+                "ms": start.elapsed().as_millis(),
+                "before": before,
+                "after": stmts.len(),
+                "skipped": skipped,
+            })
+        );
+    } else {
+        *stmts = dfg.to_lira();
+    }
+    Ok(())
+}
 
-        if let Err(error) = (|| -> Result<()> {
-            theory.run_ruleset_transformations_operations(deadline)?;
-            theory.run_ruleset_transformations_vector(deadline)?;
-            let remaining = deadline.saturating_duration_since(Instant::now());
-            dfg = lira_trs::dfg::State::from_egraph_with_timeout(&theory, state, remaining)?;
-            Ok(())
-        })() {
-            if Instant::now() >= deadline {
-                skipped = true;
-                let took = start.elapsed();
-                log::warn!("{name}: timeout after {took:?} ({error:#})");
-            } else {
-                Err(error)?
-            }
+fn process_opt(
+    name: &str,
+    dfg: &mut lira_trs::dfg::State,
+    mgc: usize,
+    deadline: Instant,
+    max_rows: usize,
+    start: Instant,
+) -> Result<bool> {
+    let mut theory = lira_opt::Theory::default();
+    theory.add_transformation_rulesets(mgc);
+    let state = dfg.to_egraph(&mut theory);
+    theory.run_ruleset_set_transformation_costs_to_zero();
+
+    if let Err(error) = (|| -> Result<()> {
+        theory.run_ruleset_transformations_operations(deadline, max_rows)?;
+        theory.run_ruleset_transformations_vector(deadline, max_rows)?;
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        *dfg = lira_trs::dfg::State::from_egraph_with_timeout(&theory, state, remaining)?;
+        Ok(())
+    })() {
+        if Instant::now() >= deadline {
+            let took = start.elapsed();
+            log::warn!("{name}: timeout after {took:?} ({error:#})");
+            return Ok(true);
+        } else if theory.total_rows() > max_rows {
+            log::warn!("{name}: too many rows: {error:#}");
+            return Ok(true);
+        } else {
+            Err(error)?
         }
     }
-    *stmts = dfg.to_lira();
-    let time = start.elapsed();
-
-    let log = serde_json::json!({
-        "name": name,
-        "ms": time.as_millis(),
-        "before": before,
-        "after": stmts.len(),
-        "skipped": skipped,
-    });
-    log::trace!("{log}");
-    Ok(())
+    Ok(false)
 }

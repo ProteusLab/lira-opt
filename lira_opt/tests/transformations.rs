@@ -34,7 +34,10 @@ fn test_(sa: &str, sb: &str, mgc: usize, eq: bool) -> anyhow::Result<()> {
     let state_b = dfg_b.to_egraph(&mut lira);
 
     lira.run_ruleset_set_transformation_costs_to_zero();
-    lira.run_ruleset_transformations_operations(Instant::now() + Duration::from_secs(60))?;
+    lira.run_ruleset_transformations_operations(
+        Instant::now() + Duration::from_secs(60),
+        usize::MAX,
+    )?;
 
     let state_a = state_a.canon(&lira);
     let state_b = state_b.canon(&lira);

@@ -19,8 +19,8 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_yaml = "0.8"
 toml = "0.8"
-dateg = { git = "https://github.com/belovdv/dateg.git", rev = "2409d1c065651feddfab00c61e755f602acde9d2" }
-dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "2409d1c065651feddfab00c61e755f602acde9d2" }
+dateg = { git = "https://github.com/belovdv/dateg.git", rev = "6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5" }
+dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "6ec3836fbd831d5f6c6d3d00c6e113a1f63d9eb5" }
 du_utils_timed = { git = "https://github.com/belovdv/du_utils.git", rev = "6adc494d430bfebe6debccf4dca9c38a69cbb1e6" }
 lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "8911eeaedf20731b715e718ea578828bba7980b5", features = [
     "lira_dateg",

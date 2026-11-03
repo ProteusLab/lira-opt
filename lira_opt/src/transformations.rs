@@ -26,25 +26,50 @@ impl Theory {
         self.run_ruleset("set all transformation costs to zero");
     }
 
+    /// One pass over the ruleset, checking the budget before each rule so a
+    /// single slow rule cannot run the whole pass past the deadline.
+    pub fn run_ruleset_budgeted(
+        &mut self,
+        ruleset: &str,
+        deadline: Instant,
+        max_rows: usize,
+    ) -> anyhow::Result<bool> {
+        let rules = self.rulesets[ruleset].clone();
+        let mut changed = false;
+        for rule in rules {
+            anyhow::ensure!(Instant::now() < deadline, "timeout in ruleset {ruleset}");
+            anyhow::ensure!(self.total_rows() <= max_rows);
+            changed |= self.run_rules(&[rule]);
+        }
+        Ok(changed)
+    }
+    pub fn run_ruleset_fixpoint(
+        &mut self,
+        ruleset: &str,
+        deadline: Instant,
+        max_rows: usize,
+    ) -> anyhow::Result<()> {
+        self.enrich(deadline)?;
+        while self.run_ruleset_budgeted(ruleset, deadline, max_rows)? {
+            self.enrich(deadline)?;
+        }
+        self.enrich(deadline)?;
+        anyhow::ensure!(self.total_rows() <= max_rows);
+        Ok(())
+    }
+
     pub fn run_ruleset_transformations_operations(
         &mut self,
         deadline: Instant,
+        max_rows: usize,
     ) -> anyhow::Result<()> {
-        self.enrich(deadline)?;
-        while self.run_ruleset("transformations: operations") {
-            anyhow::ensure!(Instant::now() < deadline, "timeout in ruleset operations");
-            self.enrich(deadline)?;
-        }
-        self.enrich(deadline)?;
-        Ok(())
+        self.run_ruleset_fixpoint("transformations: operations", deadline, max_rows)
     }
-    pub fn run_ruleset_transformations_vector(&mut self, deadline: Instant) -> anyhow::Result<()> {
-        self.enrich(deadline)?;
-        while self.run_ruleset("transformations: vector") {
-            anyhow::ensure!(Instant::now() < deadline, "timeout in ruleset vector");
-            self.enrich(deadline)?;
-        }
-        self.enrich(deadline)?;
-        Ok(())
+    pub fn run_ruleset_transformations_vector(
+        &mut self,
+        deadline: Instant,
+        max_rows: usize,
+    ) -> anyhow::Result<()> {
+        self.run_ruleset_fixpoint("transformations: vector", deadline, max_rows)
     }
 }
