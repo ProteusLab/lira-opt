@@ -26,6 +26,9 @@ lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "1344f9dc45c1c28e
     "lira_egglog",
 ] }
 
+[profile.test]
+opt-level = 2
+
 [profile.work]
 inherits = "dev"
 opt-level = 2
