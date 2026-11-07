@@ -140,7 +140,43 @@ fn validate_stmt(
         if is_write {
             anyhow::ensure!(inputs[0].0 == stmt.shape);
         }
-        get!(sr)?;
+
+        let (reg_name, field_name) = match spec.split_once('.') {
+            Some((reg, field)) => {
+                anyhow::ensure!(!field.contains('.'), "more than one `.` in {spec}");
+                (reg, Some(field))
+            }
+            None => (spec, None),
+        };
+        let sr = index
+            .sr
+            .get(reg_name)
+            .copied()
+            .with_context(|| format!("no sr {reg_name}"))?;
+        let width = match field_name {
+            Some(field_name) => {
+                let field = sr
+                    .fields
+                    .iter()
+                    .find(|field| field.name == field_name)
+                    .with_context(|| format!("no field {field_name} in sr {reg_name}"))?;
+                field
+                    .msb
+                    .checked_sub(field.lsb)
+                    .map(|width| width + 1)
+                    .with_context(|| format!("sr {reg_name} field {field_name} has msb < lsb"))?
+            }
+            None => sr.size,
+        };
+        let value_width = if is_write {
+            inputs[0].1
+        } else {
+            stmt.outputs_types[0]
+        };
+        anyhow::ensure!(
+            value_width == width,
+            "sr {spec} has width {width}, value has width {value_width}"
+        );
         Ok(())
     };
 
