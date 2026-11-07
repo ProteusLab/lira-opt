@@ -13,13 +13,13 @@ impl Theory {
         execute! {self;
             // Gather(_, index, _)
             (rule
-                (query index (sel0 (stmt_p h (out1 64) "index" "_" (in0))))
+                (query index (sel0 (stmt_p h (out1 64) "index" "1" (in0))))
                 (query val (sel0 (stmt_p h (out1 o) "gather" "_" (in3 value index _))))
                 (query h (shape_of value))
                 (uni val value)
             )
             (rule
-                (query index (sel0 (stmt_p h (out1 64) "index" "_" (in0))))
+                (query index (sel0 (stmt_p h (out1 64) "index" "1" (in0))))
                 (query val (sel0 (stmt_p h (out1 o) "gather" "_" (in3 value index _))))
                 (query h_ (shape_of value))
                 (query _ (lt_shape h h_))
