@@ -136,10 +136,9 @@ fn validate_stmt(
 
     let check_sys_reg = |is_write: bool, inputs: &[(Shape, usize)]| {
         anyhow::ensure!(stmt.outputs.len() == if is_write { 0 } else { 1 });
-        anyhow::ensure!(inputs.len() == if is_write { 2 } else { 1 });
-        anyhow::ensure!(inputs[0].0.is_scalar());
+        anyhow::ensure!(inputs.len() == if is_write { 1 } else { 0 });
         if is_write {
-            anyhow::ensure!(inputs[1].0 == stmt.shape);
+            anyhow::ensure!(inputs[0].0 == stmt.shape);
         }
         get!(sr)?;
         Ok(())
