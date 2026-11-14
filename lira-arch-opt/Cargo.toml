@@ -1,0 +1,19 @@
+[package]
+name = "lira-arch-opt"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+env_logger.workspace = true
+lira.workspace = true
+lira_opt.path = "../lira_opt"
+lira_trs.path = "../lira_trs"
+log.workspace = true
+rayon.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+toml.workspace = true

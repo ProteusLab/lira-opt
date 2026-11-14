@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+members = [
+    "lira_ext",
+    "lira_trs",
+    "lira_opt",
+    "lira-arch-opt",
+    "lira-arch-validate",
+]
+
+[workspace.dependencies]
+anyhow = "1.0.102"
+log = "0.4.29"
+ahash = "0.8.12"
+rayon = "1.12.0"
+clap = { version = "4", features = ["derive"] }
+env_logger = "0.11"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.8"
+toml = "0.8"
+dateg = { git = "https://github.com/belovdv/dateg.git", rev = "88f2e81a708c255fdb22f66af0db8b9b1bd7d26a" }
+dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "88f2e81a708c255fdb22f66af0db8b9b1bd7d26a" }
+du_utils_timed = { git = "https://github.com/belovdv/du_utils.git", rev = "6adc494d430bfebe6debccf4dca9c38a69cbb1e6" }
+lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "1344f9dc45c1c28ed17ee7c658837814b128e552", features = [
+    "lira_egglog",
+] }
+
+[profile.test]
+opt-level = 2
+
+[profile.work]
+inherits = "dev"
+opt-level = 2
+
+[profile.optimize]
+inherits = "release"
+lto = "thin"
