@@ -1,6 +1,9 @@
 pub mod dfg;
 pub mod theory;
 
+pub use dateg;
+pub use dateg_extractors;
+
 mod impl_dfg3egraph;
 mod impl_dfg3lira;
 
