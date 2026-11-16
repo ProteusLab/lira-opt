@@ -245,7 +245,7 @@ dependencies = [
 [[package]]
 name = "dateg"
 version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=88f2e81a708c255fdb22f66af0db8b9b1bd7d26a#88f2e81a708c255fdb22f66af0db8b9b1bd7d26a"
+source = "git+https://github.com/belovdv/dateg.git?rev=601afc539ec8b5537581524cdb5e1c0a259c245f#601afc539ec8b5537581524cdb5e1c0a259c245f"
 dependencies = [
  "ahash",
  "anyhow",
@@ -262,7 +262,7 @@ dependencies = [
 [[package]]
 name = "dateg_extractors"
 version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=88f2e81a708c255fdb22f66af0db8b9b1bd7d26a#88f2e81a708c255fdb22f66af0db8b9b1bd7d26a"
+source = "git+https://github.com/belovdv/dateg.git?rev=601afc539ec8b5537581524cdb5e1c0a259c245f#601afc539ec8b5537581524cdb5e1c0a259c245f"
 dependencies = [
  "ahash",
  "dateg",
@@ -276,7 +276,7 @@ dependencies = [
 [[package]]
 name = "dateg_extractors_macro"
 version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=88f2e81a708c255fdb22f66af0db8b9b1bd7d26a#88f2e81a708c255fdb22f66af0db8b9b1bd7d26a"
+source = "git+https://github.com/belovdv/dateg.git?rev=601afc539ec8b5537581524cdb5e1c0a259c245f#601afc539ec8b5537581524cdb5e1c0a259c245f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -286,7 +286,7 @@ dependencies = [
 [[package]]
 name = "dateg_macro"
 version = "0.1.0"
-source = "git+https://github.com/belovdv/dateg.git?rev=88f2e81a708c255fdb22f66af0db8b9b1bd7d26a#88f2e81a708c255fdb22f66af0db8b9b1bd7d26a"
+source = "git+https://github.com/belovdv/dateg.git?rev=601afc539ec8b5537581524cdb5e1c0a259c245f#601afc539ec8b5537581524cdb5e1c0a259c245f"
 dependencies = [
  "proc-macro2",
  "quote",
