@@ -8,7 +8,7 @@ use rayon::prelude::*;
 use crate::ir_ops::BASE_OP_SIGNATURE;
 use crate::ir_utils::iter_stmt_seq_with_inputs;
 
-/// Validates every instruction and snippet in parallel, reporting each failing
+/// Validates every snippet in parallel, reporting each failing
 /// sequence with `log::error!`.
 pub fn validate_arch(
     arch: &Arch,
@@ -17,15 +17,14 @@ pub fn validate_arch(
 ) -> Result<()> {
     let index = Arch::build_index(arch);
     let failed = AtomicBool::new(false);
-    crate::arch_utils::iter_arch_stmt_seq(arch)
-        .par_bridge()
-        .for_each(|(name, stmts)| {
-            if let Err(error) = validate_stmts_signatures(&index, stmts, custom_kinds, mult_divides)
-            {
-                failed.store(true, Ordering::Relaxed);
-                log::error!("{name}: {error:#}");
-            }
-        });
+    arch.snippets.par_iter().for_each(|snippet| {
+        if let Err(error) =
+            validate_stmts_signatures(&index, &snippet.seq, custom_kinds, mult_divides)
+        {
+            failed.store(true, Ordering::Relaxed);
+            log::error!("{}: {error:#}", snippet.name);
+        }
+    });
     anyhow::ensure!(
         !failed.load(Ordering::Relaxed),
         "some checks failed (details - env_logger)"

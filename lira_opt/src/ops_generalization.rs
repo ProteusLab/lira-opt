@@ -1,7 +1,6 @@
 use ahash::AHashMap;
 use anyhow::Context;
 use lira::{Operation, StatementSeq};
-use lira_ext::iter_arch_stmt_seq_mut_part;
 
 use crate::Arch;
 
@@ -19,12 +18,10 @@ impl Arch {
             }
         }
 
-        for (_, stmts) in
-            iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets)
-        {
+        for snippet in &mut self.0.snippets {
             let mut r = StatementSeq::default();
             let mut types = AHashMap::new();
-            for stmt in stmts.iter() {
+            for stmt in snippet.seq.iter() {
                 let mut s = stmt.clone();
                 let generic = match stmt.kind.as_str() {
                     "op" => Some("op.g"),
@@ -50,7 +47,7 @@ impl Arch {
                 }
                 r.try_push(s).unwrap();
             }
-            *stmts = r;
+            snippet.seq = r;
         }
 
         Ok(())
@@ -67,12 +64,10 @@ impl Arch {
             }
         }
 
-        for (name, stmts) in
-            iter_arch_stmt_seq_mut_part(&mut self.0.instructions, &mut self.0.snippets)
-        {
+        for snippet in &mut self.0.snippets {
             let mut r = StatementSeq::default();
             let mut types = AHashMap::new();
-            for stmt in stmts.iter() {
+            for stmt in snippet.seq.iter() {
                 let mut s = stmt.clone();
                 if let Some((_, to)) = [("op.g", "op"), ("fold.op.g", "fold.op")]
                     .iter()
@@ -94,7 +89,7 @@ impl Arch {
                                 panic!("unexpected op {base}");
                             };
                             let params = parse(&stmt.outputs_types, &inputs)
-                                .with_context(|| anyhow::anyhow!("{base} in {name}"))?;
+                                .with_context(|| anyhow::anyhow!("{base} in {}", snippet.name))?;
                             let name = lira_ext::ir_ops::generate_name(base, &params);
                             e.insert_entry(name.clone());
                             self.0.operations.push(Operation {
@@ -117,7 +112,7 @@ impl Arch {
                 }
                 r.try_push(s).unwrap();
             }
-            *stmts = r;
+            snippet.seq = r;
         }
 
         Ok(())

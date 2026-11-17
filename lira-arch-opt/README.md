@@ -1,7 +1,7 @@
 # lira-arch-opt
 
-`lira-arch-opt` generalizes an arch, optimizes every snippet and instruction
-independently, then specializes it. Cases are independent and run on a rayon
+`lira-arch-opt` generalizes an arch, optimizes each snippet independently,
+then specializes it. Include and exclude filters match snippet names. Cases run on a rayon
 pool (`-j`). Three budgets decide whether a case finishes, and each has a
 defined effect on the output.
 

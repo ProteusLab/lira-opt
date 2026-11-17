@@ -101,35 +101,23 @@ fn main() -> Result<()> {
     if cli.opt.opt {
         arch.generalize_operations()?;
     }
-    let case_count = arch.0.snippets.len() + arch.0.instructions.len();
+    let case_count = arch.0.snippets.len();
     let pool = cli
         .timeout_global_extra
         .unwrap_or(cli.timeout_per_case_soft * case_count);
     let timeout_pool = AtomicUsize::new(pool * 1000);
-    [].into_par_iter()
-        .chain(
-            arch.0
-                .snippets
-                .par_iter_mut()
-                .with_min_len(1)
-                .map(|s| (&s.name, &mut s.seq)),
-        )
-        .chain(
-            arch.0
-                .instructions
-                .par_iter_mut()
-                .with_min_len(1)
-                .map(|s| (&s.name, &mut s.semantic)),
-        )
-        .filter(|(name, _)| filter(name))
-        .for_each(|(name, stmts)| {
+    arch.0
+        .snippets
+        .par_iter_mut()
+        .filter(|snippet| filter(&snippet.name))
+        .for_each(|snippet| {
             let timeout = Duration::from_millis(
                 cli.timeout_per_case_soft as u64 * 1000 + timeout_pool.load(SeqCst) as u64,
             )
             .min(Duration::from_secs(cli.timeout_per_case_hard as u64));
             let start = Instant::now();
-            if let Err(error) = process(name, stmts, &config, &cli.opt, start + timeout, max_rows) {
-                log::error!("{name}: {error:#}");
+            if let Err(error) = process(snippet, &config, &cli.opt, start + timeout, max_rows) {
+                log::error!("{}: {error:#}", snippet.name);
             }
             let took = start.elapsed().as_millis() as usize;
             let overshoot = took.saturating_sub(cli.timeout_per_case_soft * 1000);
@@ -138,7 +126,7 @@ fn main() -> Result<()> {
                     .fetch_update(SeqCst, SeqCst, |pool| Some(pool.saturating_sub(overshoot)))
                     .unwrap_or(0);
                 if previous <= overshoot {
-                    log::error!("{name}: global time pool exhausted, exiting");
+                    log::error!("{}: global time pool exhausted, exiting", snippet.name);
                     std::process::exit(1);
                 }
             }
@@ -153,36 +141,36 @@ fn main() -> Result<()> {
 }
 
 fn process(
-    name: &str,
-    stmts: &mut lira::StatementSeq,
+    snippet: &mut lira::Snippet,
     config: &Config,
     opt: &CliOpt,
     deadline: Instant,
     max_rows: usize,
 ) -> Result<()> {
-    let before = stmts.len();
+    let name = &snippet.name;
+    let before = snippet.seq.len();
     let implicitness = |kind: &str| {
         let fail = || panic!("unknown kind {kind} in {name}");
         *config.implicitness.get(kind).unwrap_or_else(fail)
     };
 
     let start = Instant::now();
-    let mut dfg = lira_trs::dfg::State::from_lira(stmts, implicitness);
+    let mut dfg = lira_trs::dfg::State::from_lira(&snippet.seq, implicitness);
     if opt.opt {
         let skipped = process_opt(name, &mut dfg, opt.mgc, deadline, max_rows, start)?;
-        *stmts = dfg.to_lira();
+        snippet.seq = dfg.to_lira();
         log::trace!(
             "{}",
             serde_json::json!({
                 "name": name,
                 "ms": start.elapsed().as_millis(),
                 "before": before,
-                "after": stmts.len(),
+                "after": snippet.seq.len(),
                 "skipped": skipped,
             })
         );
     } else {
-        *stmts = dfg.to_lira();
+        snippet.seq = dfg.to_lira();
     }
     Ok(())
 }

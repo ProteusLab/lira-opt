@@ -22,7 +22,7 @@ toml = "0.8"
 dateg = { git = "https://github.com/belovdv/dateg.git", rev = "601afc539ec8b5537581524cdb5e1c0a259c245f" }
 dateg_extractors = { git = "https://github.com/belovdv/dateg.git", rev = "601afc539ec8b5537581524cdb5e1c0a259c245f" }
 du_utils_timed = { git = "https://github.com/belovdv/du_utils.git", rev = "6adc494d430bfebe6debccf4dca9c38a69cbb1e6" }
-lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "1344f9dc45c1c28ed17ee7c658837814b128e552", features = [
+lira = { git = "https://github.com/ProteusLab/LIRA.git", rev = "b20bef874a4bed3ba0784c7de2c8b93449c194e7", features = [
     "lira_egglog",
 ] }
 

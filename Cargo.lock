@@ -670,7 +670,7 @@ checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 [[package]]
 name = "lira"
 version = "0.1.0"
-source = "git+https://github.com/ProteusLab/LIRA.git?rev=1344f9dc45c1c28ed17ee7c658837814b128e552#1344f9dc45c1c28ed17ee7c658837814b128e552"
+source = "git+https://github.com/ProteusLab/LIRA.git?rev=b20bef874a4bed3ba0784c7de2c8b93449c194e7#b20bef874a4bed3ba0784c7de2c8b93449c194e7"
 dependencies = [
  "ahash",
  "anyhow",
